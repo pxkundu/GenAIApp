@@ -6,9 +6,9 @@ import { enhanceContentWithAI } from "../utils/aiService";
 
 const SectionList = () => {
   const [sections, setSections] = useState([
-    { id: 1, content: "Title" },
-    { id: 2, content: "Introduction" },
-    { id: 3, content: "Body" },
+    { id: 1, content: "Title", prompt: "" },
+    { id: 2, content: "Introduction", prompt: "" },
+    { id: 3, content: "Body", prompt: "" },
   ]);
 
   const moveSection = (dragIndex, hoverIndex) => {
@@ -18,14 +18,16 @@ const SectionList = () => {
     setSections(updatedSections);
   };
 
-  const enhanceContent = async (index) => {
+  const updatePrompt = (index, value) => {
     const updatedSections = [...sections];
-    updatedSections[index].content = await enhanceContentWithAI(updatedSections[index].content);
+    updatedSections[index].prompt = value;
     setSections(updatedSections);
   };
 
-  const deleteSection = (index) => {
-    setSections(sections.filter((_, i) => i !== index));
+  const enhanceContent = async (index) => {
+    const updatedSections = [...sections];
+    updatedSections[index].content = await enhanceContentWithAI(updatedSections[index].content, updatedSections[index].prompt);
+    setSections(updatedSections);
   };
 
   return (
@@ -39,7 +41,7 @@ const SectionList = () => {
             section={section}
             moveSection={moveSection}
             enhanceContent={enhanceContent}
-            deleteSection={deleteSection}
+            updatePrompt={updatePrompt}
           />
         ))}
       </div>
